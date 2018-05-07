@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+  <bean id="greetingBefore" class="cn.com.beforeEnhancer.GreetingBeforeAdvice" />
+  <bean id="greetingAfter" class="cn.com.afterEnhancer.GreetingAfterAdvice"/>
+  <bean id="greetingAround" class="cn.com.aroundEnhancer.GreetingInterceptor"/>
+  <bean id="greetingThrow" class="cn.com.throwEnhancer.TransactionManager"/>
+  <bean id="waiterTarget" class="cn.com.NativeWaiter" />
+
+  <!--静态普通方法名匹配切面-->
+  <bean id="sellerTarget" class="cn.com.Seller"/>
+  <bean id="greetingBeforeAdvisor" class="cn.com.beforeEnhancer.GreetingBeforeAdvisor"
+        p:advice-ref="greetingBefore"/>
+
+  <bean id="parent" abstract="true" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interceptorNames="greetingBeforeAdvisor"
+        p:proxyTargetClass="true"/>
+
+  <bean id="waiter" parent="parent" p:target-ref="waiterTarget"/>
+  <bean id="seller" parent="parent" p:target-ref="sellerTarget"/>
+
+
+  <!--静态正则表达式方法匹配切面-->
+  <bean id="regexpAdvisor" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"
+        p:advice-ref="greetingBefore">
+    <property name="patterns">
+      <list>
+        <value>.*greet.*</value>
+      </list>
+    </property>
+  </bean>
+
+  <bean id="waiter1" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:proxyTargetClass="true"
+        p:interceptorNames="regexpAdvisor"
+        p:target-ref="waiterTarget"
+  />
+
+  <!--动态切面-->
+  <bean id="dynamicAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    <property name="pointcut">
+      <bean class="cn.com.dynamicPoint.GreetingDynamicPointcut"/>
+    </property>
+    <property name="advice">
+      <bean class="cn.com.beforeEnhancer.GreetingBeforeAdvice"/>
+    </property>
+  </bean>
+
+  <bean id="waiter2" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interceptorNames="dynamicAdvisor"
+        p:target-ref="waiterTarget"
+        p:proxyTargetClass="true"
+  />
+
+  <!--流程切面-->
+  <bean id="controlFlowPointcut" class="org.springframework.aop.support.ControlFlowPointcut">
+    <constructor-arg type="java.lang.Class">
+      <value>cn.com.flowPoint.WaiterDelegate</value>
+    </constructor-arg>
+    <constructor-arg type="java.lang.String">
+      <value>service</value>
+    </constructor-arg>
+  </bean>
+
+
+
+
+  <bean id="controlFlowAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+        p:pointcut-ref="controlFlowPointcut"
+        p:advice-ref="greetingBefore"
+  />
+
+  <bean id="waiter3" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interceptorNames="controlFlowAdvisor"
+        p:target-ref="waiterTarget"
+        p:proxyTargetClass="true"
+  />
+
+  <!--复合切点切面-->
+  <bean id="gcp" class="cn.com.composablePointcut.GreetingComposablePointcut"></bean>
+  <bean id="composableAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor"
+        p:pointcut="#{gcp.inTersectionPointcut}"
+        p:advice-ref="greetingBefore"
+  />
+  <!--引用gcp.inTersectionPointcut方法返回的复合切点-->
+
+  <bean id="waiter4" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interceptorNames="composableAdvisor"
+        p:target-ref="waiterTarget"
+        p:proxyTargetClass="true"
+  /><!--使用复合切点-->
+
+  <!--前置增强-->
+  <bean id="waiterBefore" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:proxyInterfaces="cn.com.Waiter"
+        p:interceptorNames="greetingAfter"
+        p:target-ref="waiterTarget"
+  />
+
+  <!--后置增强-->
+  <bean id="waiterAfter" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:proxyInterfaces="cn.com.Waiter"
+        p:interceptorNames="greetingAfter"
+        p:target-ref="waiterTarget"
+  />
+
+  <!--环绕增强-->
+  <bean id="waiterAround" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:proxyInterfaces="cn.com.Waiter"
+        p:interceptorNames="greetingAround"
+        p:target-ref="waiterTarget"
+  />
+
+  <!--异常抛出增强-->
+  <bean id="waiterthrow" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:proxyInterfaces="cn.com.Waiter"
+        p:interceptorNames="greetingThrow"
+        p:target-ref="waiterTarget"
+  />
+
+  <!--引介增强-->
+  <bean id="pmonitor" class="cn.com.introduceEnhancer.ControllablePerformanceMonitor"/>
+  <bean id="forumServiceTarget" class="cn.com.introduceEnhancer.ForumServiceImpl"/>
+  <bean id="forumService" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interfaces="cn.com.introduceEnhancer.Monitorable"
+        p:target-ref="forumServiceTarget"
+        p:interceptorNames="pmonitor"
+        p:proxyTargetClass="true"
+  />
+
+
+  <!--自动代理BeanNameAutoProxyCreator-->
+  <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator"
+        p:beanNames="*er"
+        p:interceptorNames="greetingBefore"
+        p:optimize="true"
+  />
+
+  <bean id="regexpAdvisor1" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor"
+        p:patterns=".*greet.*"
+        p:advice-ref="greetingBefore"
+  />
+  <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"></bean>
+
+
+</beans>
