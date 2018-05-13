@@ -1,6 +1,6 @@
 package cn.com.introduceEnhancer;
 
-public class ForumServiceImpl implements ForumService {
+public class ForumServiceImpl implements ForumService{
     public void removeTopic(int topicID){
         //开始对该方法进行性能监视
         //PerformanceMonitor.begin("removeTopic");

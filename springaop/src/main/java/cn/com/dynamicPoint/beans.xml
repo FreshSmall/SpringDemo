@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+  <!--配置静态方法匹配切面-->
+  <bean id="waiterTarget" class="cn.com.NativeWaiter"/>
+  <!--动态切面-->
+  <bean id="dynamicAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    <property name="pointcut">
+      <bean class="cn.com.dynamicPoint.GreetingDynamicPointcut"/>
+    </property>
+    <property name="advice">
+      <bean class="cn.com.beforeEnhancer.GreetingBeforeAdvice"/>
+    </property>
+  </bean>
+
+  <bean id="waiter2" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interceptorNames="dynamicAdvisor"
+        p:target-ref="waiterTarget"
+        p:proxyTargetClass="true"
+  />
+
+</beans>

@@ -10,7 +10,7 @@ public class ComposablePointTest {
     @Test
     public void test(){
 
-        String path = "beans.xml";
+        String path = "cn/com/composablePointcut/beans.xml";
         ApplicationContext ctx = new ClassPathXmlApplicationContext(path);
 
         WaiterDelegate wd=new WaiterDelegate();

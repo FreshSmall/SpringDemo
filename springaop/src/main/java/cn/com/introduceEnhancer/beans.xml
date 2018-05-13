@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+  <bean id="pmonitor" class="cn.com.introduceEnhancer.ControllablePerformanceMonitor"/>
+  <bean id="performanceTarget" class="cn.com.introduceEnhancer.ForumServiceImpl"/>
+  <!--<bean id="forumService" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interfaces="cn.com.introduceEnhancer.Monitorable"
+        p:target-ref="performanceTarget"
+        p:interceptorNames="pmonitor"
+        p:proxyTargetClass="true"/>-->
+  <bean id="forumService" class="org.springframework.aop.framework.ProxyFactoryBean"
+        p:interfaces="cn.com.introduceEnhancer.Monitorable"
+        p:target-ref="performanceTarget"
+        p:interceptorNames="introduceAdvisor"
+        p:proxyTargetClass="true"/>
+
+  <bean id="introduceAdvisor" class="org.springframework.aop.support.DefaultPointcutAdvisor">
+    <constructor-arg>
+      <bean class="cn.com.introduceEnhancer.ControllablePerformanceMonitor"/>
+    </constructor-arg>
+  </bean>
+
+
+
+</beans>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+  <!--1、目标bean-->
+  <bean id="waiter" class="com.example.NativeWaiter"/>
+  <!--2、使用了@AspectJ注解的切面类-->
+  <bean class="com.example.beforeaspectJ.PreGreetingAspectJ"/>
+  <!--方法一、自动代理创建器，自动将@AspectJ注解切面类织入目标Bean中-->
+  <!--<bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator"/>-->
+    <!--方法二、上面方法使用的是Annotation AspectJAutoProxy Creator能够将@AspectJ注解切面类自动织入目标Bean中，如果使用的是基于Schema的aop
+        命名空间进行配置，可以使用如下方法进行配置-->
+    <aop:aspectj-autoproxy/>
+</beans>

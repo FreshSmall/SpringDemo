@@ -24,10 +24,11 @@ public class ThrowAdviceTest {
         proxy.greetTo("John");
         proxy.serveTo("Tom");*/
 
-        String path="beans.xml";
+        String path="cn/com/throwEnhancer/beans.xml";
         ApplicationContext ctx=new ClassPathXmlApplicationContext(path);
-        Waiter waiter= (Waiter) ctx.getBean("waiterthrow");
+        Waiter waiter= (Waiter) ctx.getBean("waiter");
         waiter.greetTo("Jhon");
+        waiter.serveTo("Jhon");
     }
 
 }

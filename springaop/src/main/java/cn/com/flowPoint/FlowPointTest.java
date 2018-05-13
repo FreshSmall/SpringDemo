@@ -9,7 +9,7 @@ public class FlowPointTest {
     @Test
     public void test(){
 
-        String path = "beans.xml";
+        String path = "cn/com/flowPoint/beans.xml";
         ApplicationContext ctx = new ClassPathXmlApplicationContext(path);
 
         WaiterDelegate wd=new WaiterDelegate();

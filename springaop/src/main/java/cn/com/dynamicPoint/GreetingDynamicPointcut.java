@@ -1,5 +1,7 @@
 package cn.com.dynamicPoint;
 
+import cn.com.Waiter;
+import org.springframework.aop.ClassFilter;
 import org.springframework.aop.support.DynamicMethodMatcherPointcut;
 
 import java.lang.reflect.Method;
@@ -16,7 +18,7 @@ public class GreetingDynamicPointcut extends DynamicMethodMatcherPointcut {
     }
 
 
-    /*public ClassFilter getClassFilter(){
+    public ClassFilter getClassFilter(){
         return new ClassFilter() {
             @Override
             public boolean matches(Class<?> clazz) {
@@ -25,7 +27,7 @@ public class GreetingDynamicPointcut extends DynamicMethodMatcherPointcut {
                 return Waiter.class.isAssignableFrom(clazz);
             }
         };
-    }*/
+    }
 
     @Override
     public boolean matches(Method method, Class<?> clazz, Object... objects) {//对方法进行动态切点检查
@@ -34,9 +36,9 @@ public class GreetingDynamicPointcut extends DynamicMethodMatcherPointcut {
         return specialClientList.contains(clientName);
     }
 
-    /*@Override
+    @Override
     public boolean matches(Method method, Class<?> clazz) {//对方法进行静态切点检查
         System.out.println("调用静态检查方法对"+clazz.getName()+"类的"+method+"静态检查.");
         return "greetTo".equals(method.getName());
-    }*/
+    }
 }

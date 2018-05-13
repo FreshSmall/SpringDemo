@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+
+  <aop:config proxy-target-class="true">
+    <aop:aspect ref="adviceMethods">
+      <aop:pointcut id="greetpointcut" expression="target(com.example.Waiter)) and execution(* *(..))"/>
+      <!--<aop:before pointcut="target(com.example.Waiter)) and execution(* *(..))" method="preGreeting"/>-->
+      <aop:before pointcut-ref="greetpointcut" method="preGreeting"/>
+    </aop:aspect>
+
+  </aop:config>
+  <bean id="naiveWaiter" class="com.example.NativeWaiter"></bean>
+  <bean id="adviceMethods" class="com.example.schemaAspectJ.AdviceMethods"></bean>
+
+</beans>

@@ -1,10 +1,7 @@
 package cn.com.afterEnhancer;
 
-import cn.com.NativeWaiter;
 import cn.com.Waiter;
 import org.junit.Test;
-import org.springframework.aop.AfterAdvice;
-import org.springframework.aop.framework.ProxyFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -12,7 +9,7 @@ public class AfterAdviceTest {
 
     @Test
     public void before() {
-        System.out.println("测试代码");
+        /*System.out.println("测试代码");
         Waiter target = new NativeWaiter();
         AfterAdvice advice=new GreetingAfterAdvice();
 
@@ -25,12 +22,13 @@ public class AfterAdviceTest {
         //生成代理实例
         Waiter proxy= (Waiter) pf.getProxy();
         proxy.greetTo("John");
-        proxy.serveTo("Tom");
+        proxy.serveTo("Tom");*/
 
-        String path="beans.xml";
+        String path="cn/com/afterEnhancer/beans.xml";
         ApplicationContext ctx=new ClassPathXmlApplicationContext(path);
-        Waiter waiter= (Waiter) ctx.getBean("waiterAfter");
+        Waiter waiter= (Waiter) ctx.getBean("waiter");
         waiter.greetTo("Jhon");
+        waiter.serveTo("Jhon");
     }
 
 }

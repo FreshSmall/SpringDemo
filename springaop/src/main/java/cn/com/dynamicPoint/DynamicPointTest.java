@@ -10,7 +10,7 @@ public class DynamicPointTest {
     @Test
     public void introduce() {
         long starttime=System.currentTimeMillis();
-        String path = "beans.xml";
+        String path = "cn/com/dynamicPoint/beans.xml";
         ApplicationContext ctx = new ClassPathXmlApplicationContext(path);
         Waiter waiter = (Waiter) ctx.getBean("waiter2");
 

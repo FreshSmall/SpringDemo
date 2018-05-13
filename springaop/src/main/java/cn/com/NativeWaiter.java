@@ -12,7 +12,6 @@ public class NativeWaiter implements Waiter,BeanSelfProxyAware {
 
     @Override
     public void greetTo(String name) {
-        //throw new RuntimeException("运行异常");
         System.out.println("greet to "+name+"...");
     }
 
