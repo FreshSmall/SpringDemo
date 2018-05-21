@@ -1,4 +1,6 @@
 Spring demo 中有两个模块
 springaop模块，里面通过Spring AOP来配置切面编程
 springaspectJ模块，里面通过aspectJ来配置切面编程
+springData模块，里面是Spring事务管理的相关代码
+spingSpEL模块，里面是Spring动态语言表达式，是一个支持运行时查询和操作对象图的强大动态语言
 
