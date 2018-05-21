@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+  <!--引入DAO和DataSource的配置文件-->
+  <!--suppress SpringIncorrectResourceTypeInspection -->
+    <import resource="classpath:applicationContext-dao.xml"/>
+
+      <!--声明事务管理-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!--使用强大的切点表达式语言轻松定义目标方法-->
+    <aop:config>
+        <!--2.1.通过aop定义事务增强切面-->
+        <aop:pointcut id="serviceMethod" expression="execution(* com.example.SequenceNumber.*(..))"/>
+        <!--2.2.引用事务增强-->
+        <aop:advisor pointcut-ref="serviceMethod" advice-ref="txAdvice"/>
+    </aop:config>
+
+    <!--3.事务增强-->
+    <tx:advice id="txAdvice" transaction-manager="txManager">
+        <!--3.1.事务属性定义-->
+        <tx:attributes>
+            <tx:method name="get*" read-only="false"/>
+            <tx:method name="add*" rollback-for="Exception"/>
+            <tx:method name="update*"/>
+        </tx:attributes>
+    </tx:advice>
+
+</beans>

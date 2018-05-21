@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Configures the Camel Context-->
+
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/c"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+    <context:component-scan base-package="com.example"/>
+  <!--引入DAO和DataSource的配置文件-->
+    <import resource="classpath:applicationContext-dao.xml"/>
+
+      <!--声明事务管理-->
+    <bean id="txManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" p:dataSource-ref="dataSource"/>
+
+    <!--需要实施事务增强的目标业务Bean-->
+    <bean id="bbtForumTarget" class="com.example.SequenceNumber"
+                              p:forumDao-ref="forumDao"
+                              p:topicDao-ref="topicDao"
+                              p:postDao-ref="postDao"
+    />
+
+    <!--使用事务代理工厂类为目标业务Bean提供事务增强-->
+    <bean id="bbtForum" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean"
+            p:transactionManager-ref="txManager"
+            p:target-ref="bbtForumTarget">
+        <property name="transactionAttributes">
+            <props>
+                <prop key="get*">PROPAGATION_REQUIRED,readOnly</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+</beans>
