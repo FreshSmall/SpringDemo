@@ -14,8 +14,8 @@ public class ComplexAspectJTest {
         ApplicationContext ctx=new ClassPathXmlApplicationContext(path);
         Waiter waiter= (Waiter) ctx.getBean("waiter");
         waiter.greetTo("Jhon");
-        waiter.serveTo("Jhon");
+       /* waiter.serveTo("Jhon");
         waiter.smile("Jhon",2);
-        waiter.shell("Jhon",2);
+        waiter.shell("Jhon",2);*/
     }
 }
